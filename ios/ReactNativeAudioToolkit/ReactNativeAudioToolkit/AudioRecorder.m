@@ -195,13 +195,25 @@ RCT_EXPORT_METHOD(prepare:(nonnull NSNumber *)recorderId
     callback(@[[NSNull null], filePath]);
 }
 
-RCT_EXPORT_METHOD(record:(nonnull NSNumber *)recorderId withCallback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(record:(nonnull NSNumber *)recorderId duration:(nonnull NSNumber *)duration withCallback:(RCTResponseSenderBlock)callback) {
     AVAudioRecorder *recorder = [[self recorderPool] objectForKey:recorderId];
+    NSLog(@"record duration: %@", duration);
+    
     if (recorder) {
-        if (![recorder record]) {
-            NSDictionary* dict = [Helpers errObjWithCode:@"startfail" withMessage:@"Failed to start recorder"];
-            callback(@[dict]);
-            return;
+        if (duration.intValue) {
+            NSLog(@"record with specified duration");
+            if (![recorder recordForDuration:(NSTimeInterval) duration.intValue]) {
+                NSDictionary* dict = [Helpers errObjWithCode:@"startfail" withMessage:@"Failed to start recorder"];
+                callback(@[dict]);
+                return;
+            }
+        } else {
+            NSLog(@"record without specified duration");
+            if (![recorder record]) {
+                NSDictionary* dict = [Helpers errObjWithCode:@"startfail" withMessage:@"Failed to start recorder"];
+                callback(@[dict]);
+                return;
+            }
         }
     } else {
         NSDictionary* dict = [Helpers errObjWithCode:@"notfound" withMessage:@"Recorder with that id was not found"];

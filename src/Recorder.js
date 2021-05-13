@@ -85,7 +85,7 @@ class Recorder extends EventEmitter {
     return this;
   }
 
-  record(callback = noop) {
+  record(duration = 0, callback = noop) {
     let tasks = [];
 
     // Make sure recorder is prepared
@@ -97,7 +97,7 @@ class Recorder extends EventEmitter {
 
     // Start recording
     tasks.push((next) => {
-      RCTAudioRecorder.record(this._recorderId, next);
+      RCTAudioRecorder.record(this._recorderId, duration, next);
     });
 
     async.series(tasks, (err) => {

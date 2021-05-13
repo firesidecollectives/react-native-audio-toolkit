@@ -294,7 +294,7 @@ declare class Recorder extends EventEmitter {
      * 
      * @param callback Callback is called after recording has started or with error object if an error occurred.
      */
-    record(callback?: ((err: RecorderError | null) => void)): this;
+    record(duration?: number, callback?: ((err: RecorderError | null) => void)): this;
 
     /**
      * Stop recording and save the file.
