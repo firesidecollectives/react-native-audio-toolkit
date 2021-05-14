@@ -93,6 +93,8 @@
         float _currentLevel = [_meteringRecorder averagePowerForChannel: 0];
         [body setObject:[NSNumber numberWithFloat:_currentLevel] forKey:@"value"];
         [body setObject:[NSNumber numberWithFloat:_currentLevel] forKey:@"rawValue"];
+        [body setObject:[NSNumber numberWithFloat:_meteringRecorder.currentTime] forKey:@"currentTime"];
+        
         NSString *eventName = [NSString stringWithFormat:@"RCTAudioRecorderEvent:%@", _meteringRecorderId];
         [self.bridge.eventDispatcher sendAppEventWithName:eventName
                                                      body:@{@"event" : @"meter",
