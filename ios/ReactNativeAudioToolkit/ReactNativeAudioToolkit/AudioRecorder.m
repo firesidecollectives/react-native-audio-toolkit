@@ -33,15 +33,7 @@
 @synthesize bridge = _bridge;
 
 - (void)dealloc {
-    [self stopMeteringTimer];
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    NSError *error = nil;
-    [audioSession setActive:NO error:&error];
-    
-    if (error) {
-        NSLog (@"RCTAudioRecorder: Could not deactivate current audio session. Error: %@", error);
-        return;
-    }
+    [self cleanup];
 }
 
 - (NSMutableDictionary *) recorderPool {
@@ -53,6 +45,19 @@
 
 -(NSNumber *) keyForRecorder:(nonnull AVAudioRecorder*)recorder {
     return [[_recorderPool allKeysForObject:recorder] firstObject];
+}
+
+-(void)cleanup {
+    NSLog(@"recorder cleanup");
+    [self stopMeteringTimer];
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    [audioSession setActive:NO error:&error];
+    
+    if (error) {
+        NSLog (@"RCTAudioRecorder: Could not deactivate current audio session. Error: %@", error);
+        return;
+    }
 }
 
 #pragma mark - Metering functions
@@ -278,6 +283,7 @@ RCT_EXPORT_METHOD(destroy:(nonnull NSNumber *)recorderId withCallback:(RCTRespon
                                                                 }];
         }
     }
+    [self cleanup];
 }
 
 - (void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder
